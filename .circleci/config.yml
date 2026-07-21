@@ -6,7 +6,8 @@ orbs:
 
 jobs:
   build-and-test:
-    executor: maven/default
+    docker:
+      - image: cimg/openjdk:17.0
     steps:
       - checkout
       - run:
