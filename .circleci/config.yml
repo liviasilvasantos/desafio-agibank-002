@@ -2,7 +2,7 @@
 version: 2.1
 
 orbs:
-  codecov: codecov/codecov@4.0.1
+  codecov: codecov/codecov@5
 
 jobs:
   build-and-test:
@@ -21,7 +21,6 @@ jobs:
           command: mvn verify
       - codecov/upload:
           file: target/site/jacoco/jacoco.xml
-
 workflows:
   sample:
     jobs:
