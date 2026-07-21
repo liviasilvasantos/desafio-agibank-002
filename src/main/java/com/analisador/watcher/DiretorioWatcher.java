@@ -21,15 +21,27 @@ public class DiretorioWatcher {
     private static final Logger log = LoggerFactory.getLogger(DiretorioWatcher.class);
     private static final String EXTENSAO_DAT = ".dat";
 
+    @FunctionalInterface
+    public interface WatchServiceSupplier {
+        WatchService get() throws IOException;
+    }
+
     private final Path diretorioEntrada;
     private final ArquivoPipeline pipeline;
     private final ExecutorService executor;
+    private final WatchServiceSupplier watchServiceSupplier;
     private volatile boolean running;
 
     public DiretorioWatcher(final Path diretorioEntrada, final ArquivoPipeline pipeline){
+        this(diretorioEntrada, pipeline, () -> FileSystems.getDefault().newWatchService(), Executors.newCachedThreadPool());
+    }
+
+    DiretorioWatcher(final Path diretorioEntrada, final ArquivoPipeline pipeline,
+                     final WatchServiceSupplier watchServiceSupplier, final ExecutorService executor) {
         this.diretorioEntrada = diretorioEntrada;
         this.pipeline = pipeline;
-        this.executor = Executors.newCachedThreadPool();
+        this.watchServiceSupplier = watchServiceSupplier;
+        this.executor = executor;
     }
 
     public void iniciar() throws IOException {
@@ -50,10 +62,14 @@ public class DiretorioWatcher {
         }
     }
 
+    protected void registrarDiretorio(final WatchService watchService) throws IOException {
+        diretorioEntrada.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
+    }
+
     private void monitorar() throws IOException {
         running = true;
-        try(WatchService watchService = FileSystems.getDefault().newWatchService()){
-            diretorioEntrada.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
+        try(WatchService watchService = watchServiceSupplier.get()){
+            registrarDiretorio(watchService);
             log.info("Monitorando diretorio: {}", diretorioEntrada);
 
             while(running) {
