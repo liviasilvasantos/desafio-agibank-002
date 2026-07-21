@@ -11,7 +11,11 @@ public class AppConfig {
     private final Path diretorioSaida;
 
     public AppConfig() {
-        final Properties props = carregaPropriedades();
+        this("application.properties");
+    }
+
+    AppConfig(final String nomeArquivoPropriedades) {
+        final Properties props = carregaPropriedades(nomeArquivoPropriedades);
         final String home = System.getProperty("user.home");
 
         this.diretorioEntrada = Path.of(home, props.getProperty("app.diretorio.entrada", "data/in"));
@@ -23,10 +27,10 @@ public class AppConfig {
         this.diretorioSaida = diretorioSaida;
     }
 
-    private Properties carregaPropriedades() {
+    private Properties carregaPropriedades(final String nomeArquivoPropriedades) {
         final Properties props = new Properties();
-        try(final InputStream is = getClass().getClassLoader().getResourceAsStream("application.properties")) {
-            if(is != null){
+        try(final InputStream is = getClass().getClassLoader().getResourceAsStream(nomeArquivoPropriedades)) {
+            if (is != null) {
                 props.load(is);
             }
         } catch(final IOException e) {

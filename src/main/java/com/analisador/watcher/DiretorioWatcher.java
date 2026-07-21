@@ -58,7 +58,6 @@ public class DiretorioWatcher {
 
             while(running) {
                 WatchKey key;
-
                 try{
                     key = watchService.take();
                 } catch(final InterruptedException e){

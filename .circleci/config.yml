@@ -8,8 +8,8 @@ jobs:
       - checkout
       - restore_cache:
         keys:
-          - maven-{{ checksum "pom.xml" }}
-          - maven-
+          - maven-deps-{{ checksum "pom.xml" }}
+          - maven-deps-
       - run:
           name: Build project
           command: mvn compile -q
@@ -19,7 +19,7 @@ jobs:
       - save_cache:
         paths:
           - ~/.m2
-        key: maven-{{ checksum "pom.xml" }}
+        key: maven-deps-{{ checksum "pom.xml" }}
       - run:
           name: Generate coverage report (Jacoco)
           command: |
@@ -31,7 +31,7 @@ jobs:
           command: |
             curl -0s https://cli.codecov.io/latest/linux/codecov
             chmod +x codecov
-            ./codecov upload-process -t ${CODECOV_TOKEN} -f target/site/jacoco/jacoco.xml
+            ./codecov upload-process -f target/site/jacoco/jacoco.xml
       - store_test_results:
         path: target/surefire-reports
       - store_artifacts:
