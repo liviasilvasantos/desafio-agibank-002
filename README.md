@@ -59,6 +59,69 @@ src/main/java/com/analisador/
     Application.java -> Ponto de entrada da aplicação
 ```
 
+## Fluxo de Processamento
+
+O diagrama de sequência a seguir ilustra o fluxo de execução assíncrono que ocorre na aplicação sempre que um novo arquivo com extensão `.dat` é adicionado ao diretório de entrada (`data/in`):
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor SO as Sistema Operacional
+    participant Watcher as DiretorioWatcher
+    participant Executor as ExecutorService (Threads)
+    participant Pipeline as ArquivoPipeline
+    participant Processor as ArquivoProcessor
+    participant LinhaParser as LinhaParser
+    participant RegParser as RegistroParser
+    participant Service as RelatorioService
+    participant Writer as RelatorioWriter
+
+    SO->>Watcher: Evento ENTRY_CREATE (Novo arquivo)
+    alt Arquivo possui extensão .dat
+        Watcher->>Executor: submit(() -> pipeline.execute(novoArquivo))
+        activate Executor
+        Note over Executor: Executado de forma assíncrona por uma thread dedicada
+        
+        Executor->>Pipeline: execute(arquivo)
+        activate Pipeline
+        
+        Pipeline->>Processor: processar(arquivo)
+        activate Processor
+        
+        loop Para cada linha do arquivo
+            Processor->>LinhaParser: parse(linha, dados)
+            activate LinhaParser
+            LinhaParser->>LinhaParser: extrairTipo(linha)
+            LinhaParser->>RegParser: parse(linha, dados)
+            activate RegParser
+            Note over RegParser: Parser específico (Vendedor, Cliente ou Venda)
+            RegParser-->>LinhaParser: 
+            deactivate RegParser
+            LinhaParser-->>Processor: 
+            deactivate LinhaParser
+        end
+        
+        Processor-->>Pipeline: retorna DadosArquivo
+        deactivate Processor
+        
+        Pipeline->>Service: gerar(dados)
+        activate Service
+        Note over Service: Processa métricas do relatório
+        Service-->>Pipeline: retorna Relatorio
+        deactivate Service
+        
+        Pipeline->>Writer: execute(nomeArquivo, relatorio)
+        activate Writer
+        Writer->>Writer: Grava arquivo .done.dat em data/out
+        Writer-->>Pipeline: 
+        deactivate Writer
+        
+        Pipeline-->>Executor: Fim da execução
+        deactivate Pipeline
+        deactivate Executor
+    end
+```
+
 ## Decisões de arquitetura
 
 ### Padrões de Arquitetura
