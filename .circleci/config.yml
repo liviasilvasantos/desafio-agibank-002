@@ -11,16 +11,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build
-          command: mvn -B -DskipTests clean package
+        name: Build
+        command: mvn -B -DskipTests clean package
       - run:
-          name: Test
-          command: mvn test
+        name: Test
+        command: mvn test
       - run:
-          name: Run unit and integration tests
-          command: mvn verify
+        name: Run unit and integration tests
+        command: mvn verify
       - codecov/upload:
-          file: target/site/jacoco/jacoco.xml
+        file: target/site/jacoco/jacoco.xml
 
 workflows:
   sample:
