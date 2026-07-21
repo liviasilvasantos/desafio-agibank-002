@@ -2,12 +2,12 @@
 version: 2.1
 
 orbs:
+  maven: circleci/maven@0.0.1
   codecov: codecov/codecov@5
 
 jobs:
   build-and-test:
-    docker:
-      - image: cimg/openjdk:17.0
+    executor: maven/default
     steps:
       - checkout
       - run:
@@ -23,6 +23,6 @@ jobs:
           file: target/site/jacoco/jacoco.xml
 
 workflows:
-  maven-workflow:
+  maven_workflow:
     jobs:
       - build-and-test
