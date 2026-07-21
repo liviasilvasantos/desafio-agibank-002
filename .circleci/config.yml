@@ -21,7 +21,8 @@ jobs:
           command: mvn verify
       - codecov/upload:
           file: target/site/jacoco/jacoco.xml
+
 workflows:
-  my-workflow:
+  maven-workflow:
     jobs:
       - build-and-test
