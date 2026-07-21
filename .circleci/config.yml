@@ -22,6 +22,6 @@ jobs:
       - codecov/upload:
           file: target/site/jacoco/jacoco.xml
 workflows:
-  ci:
+  my-workflow:
     jobs:
       - build-and-test
