@@ -3,8 +3,6 @@
 [![CircleCI](https://circleci.com/gh/liviasilvasantos/desafio-agibank-002.svg?style=shield)](https://circleci.com/gh/liviasilvasantos/desafio-agibank-002)
 [![codecov](https://codecov.io/gh/liviasilvasantos/desafio-agibank-002/branch/main/graph/badge.svg)](https://codecov.io/gh/liviasilvasantos/desafio-agibank-002)
 
-> Substitua `{USUARIO}`e `{REPOSITORIO}` pelos valores reais do GitHub após criar o repositório.
-
 Sistema de análise de dados que monitora continuamente um diretoório, importa arquivos `.dat`, processa registros de vendedores, clientes e vendas, e gera relatórios automaticamente.
 
 ## Como compilar e executar
