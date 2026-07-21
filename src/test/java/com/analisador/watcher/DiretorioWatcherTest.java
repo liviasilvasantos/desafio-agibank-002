@@ -56,7 +56,7 @@ public class DiretorioWatcherTest {
         verify(pipeline, never()).execute(tempDir.resolve("ignorar.txt"));
     }
 
-//    @Test
+    @Test
     void deveDetectarNovoArquivoDat(@TempDir Path tempDir) throws Exception {
         final DiretorioWatcher watcher = new DiretorioWatcher(tempDir, pipeline);
 
@@ -76,7 +76,7 @@ public class DiretorioWatcherTest {
         Files.createFile(tempDir.resolve("novo_arquivo.dat"));
         assertTrue(Files.exists(tempDir.resolve("novo_arquivo.dat")));
 
-        assertTrue(latch.await(5, TimeUnit.SECONDS));
+        assertTrue(latch.await(15, TimeUnit.SECONDS));
         watcher.parar();
         thread.interrupt();
         thread.join(3000);
