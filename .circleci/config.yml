@@ -2,7 +2,7 @@
 version: 2.1
 
 orbs:
-  codecov: codecov/codecov@5
+  codecov: codecov/codecov@6
 
 jobs:
   build-and-test:
@@ -23,6 +23,6 @@ jobs:
           file: target/site/jacoco/jacoco.xml
 
 workflows:
-  upload-to-codecov:
+  sample:
     jobs:
       - build-and-test
