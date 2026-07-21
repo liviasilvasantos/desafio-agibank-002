@@ -5,24 +5,34 @@ orbs:
   codecov: codecov/codecov@6
 
 jobs:
+  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build-and-test:
+    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
     docker:
+      # Specify the version you desire here
       - image: cimg/openjdk:17.0
-    steps:
-      - checkout
-      - run:
-        name: Build
-        command: mvn -B -DskipTests clean package
-      - run:
-        name: Test
-        command: mvn test
-      - run:
-        name: Run unit and integration tests
-        command: mvn verify
-      - codecov/upload:
-        file: target/site/jacoco/jacoco.xml
 
+    # Add steps to the job
+    steps:
+      # Checkout the code as the first step.
+      - checkout
+      # Use mvn clean and package as the standard maven build phase
+      - run:
+          name: Build
+          command: mvn -B -DskipTests clean package
+      # Then run your tests!
+      - run:
+          name: Test
+          command: mvn test
+      - run:
+          name: Run unit and integration tests
+          command: mvn verify
+      - codecov/upload:
+          file: target/site/jacoco/jacoco.xml
+
+# Orchestrate jobs using workflows
 workflows:
-  sample:
+  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
+    # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
